@@ -168,7 +168,7 @@ def fetch_releases_for_country(country, date):
     headers = {}
     if API_KEY:
         headers["X-API-Key"] = API_KEY
-    params = {"country": country, "date_from": date, "date_to": date, "per_page": "100"}
+    params = {"country": country, "date_from": date, "date_to": date, "per_page": "100", "fields": "brief"}
     try:
         resp = requests.get(f"{API_URL}/v1/releases", params=params, headers=headers, timeout=30)
         resp.raise_for_status()
@@ -179,17 +179,31 @@ def fetch_releases_for_country(country, date):
         return []
 
 
-def fetch_release_detail(release_id):
+def fetch_releases_batch(release_ids):
+    """Fetch multiple releases by ID in one request (max 50)."""
+    if not release_ids:
+        return {}
     headers = {}
     if API_KEY:
         headers["X-API-Key"] = API_KEY
-    try:
-        resp = requests.get(f"{API_URL}/v1/releases/{release_id}", headers=headers, timeout=30)
-        resp.raise_for_status()
-        return resp.json()
-    except requests.RequestException as e:
-        print(f"  Warning: Failed to fetch release {release_id}: {e}")
-        return None
+    headers["Content-Type"] = "application/json"
+    result = {}
+    # Chunk into batches of 50
+    for i in range(0, len(release_ids), 50):
+        chunk = release_ids[i:i + 50]
+        try:
+            resp = requests.post(
+                f"{API_URL}/v1/releases/batch",
+                json={"ids": chunk},
+                headers=headers,
+                timeout=60,
+            )
+            resp.raise_for_status()
+            for r in resp.json():
+                result[r["id"]] = r
+        except requests.RequestException as e:
+            print(f"  Warning: Batch fetch failed for {len(chunk)} IDs: {e}")
+    return result
 
 
 # --- LLM ---
@@ -340,7 +354,15 @@ def generate_daily(client, conn, target_date):
         if len(releases) > 5:
             print(f"    {COUNTRY_NAMES[country]}: {len(releases)} -> {len(filtered)}")
 
-    # Fetch full content and summarize
+    # Batch-fetch full content for all filtered releases
+    all_ids = []
+    for releases in filtered_releases.values():
+        all_ids.extend(r["id"] for r in releases)
+    print(f"\n  Batch-fetching {len(all_ids)} releases...")
+    details_map = fetch_releases_batch(all_ids)
+    print(f"  Got {len(details_map)} release details")
+
+    # Summarize per country
     country_data = []
     for country, releases in filtered_releases.items():
         name = COUNTRY_NAMES[country]
@@ -348,7 +370,7 @@ def generate_daily(client, conn, target_date):
 
         release_summaries = []
         for r in releases:
-            detail = fetch_release_detail(r["id"])
+            detail = details_map.get(r["id"])
             if not detail:
                 continue
             print(f"    Summarizing: {detail['title'][:60]}...")
