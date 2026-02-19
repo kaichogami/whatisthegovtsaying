@@ -27,8 +27,8 @@ API_KEY = os.environ.get("WORLD_NEWS_API_KEY", "")
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "google/gemini-2.5-flash-lite")
 DB_PATH = os.environ.get("DIGEST_DB_PATH", os.path.join(os.path.dirname(__file__), "..", "data", "digests.db"))
-BACKFILL_DAYS = int(os.environ.get("BACKFILL_DAYS", "30"))
-PRUNE_DAYS = 30
+BACKFILL_DAYS = int(os.environ.get("BACKFILL_DAYS", "90"))
+PRUNE_DAYS = 90
 
 COUNTRY_NAMES = {
     "AE": "UAE", "AR": "Argentina", "AU": "Australia", "BR": "Brazil",
