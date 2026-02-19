@@ -1,0 +1,56 @@
+---
+import { COUNTRY_FLAGS } from "../lib/constants";
+import { md, stripMd } from "../lib/md";
+import type { CountryDigest } from "../lib/digest";
+
+interface Props {
+  country: CountryDigest;
+}
+
+const { country } = Astro.props;
+const flag = COUNTRY_FLAGS[country.country_code] || "";
+const summaryHtml = md(country.summary);
+---
+
+<section class="border-t border-(--color-rule) pt-4 sm:pt-6">
+  <div class="flex items-baseline gap-2 mb-1">
+    <span class="text-base sm:text-lg" aria-hidden="true">{flag}</span>
+    <span class="text-xs font-semibold uppercase tracking-wide text-(--color-ink-muted)">
+      {country.country_name}
+    </span>
+  </div>
+  {country.title && (
+    <h3 class="font-headline text-lg sm:text-xl font-bold text-(--color-ink) mb-2">
+      {stripMd(country.title)}
+    </h3>
+  )}
+  <div class="prose text-(--color-ink-light) leading-relaxed text-sm sm:text-base mb-3 sm:mb-4" set:html={summaryHtml} />
+
+  {country.releases.length > 0 && (
+    <details class="group">
+      <summary class="cursor-pointer text-sm font-medium text-(--color-accent) hover:underline select-none py-1">
+        Sources ({country.releases.length})
+      </summary>
+      <ul class="mt-2 sm:mt-3 space-y-3 sm:space-y-4 pl-0 list-none">
+        {country.releases.map((release) => (
+          <li class="border-l-2 border-(--color-rule) pl-3 sm:pl-4">
+            <a
+              href={release.original_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm font-semibold text-(--color-ink) hover:text-(--color-accent) no-underline leading-snug inline-block"
+            >
+              {release.title} &#8599;
+            </a>
+            {release.ministry && (
+              <span class="block sm:inline text-xs text-(--color-ink-muted) sm:ml-2 mt-0.5 sm:mt-0">
+                {release.ministry}
+              </span>
+            )}
+            <div class="prose text-sm text-(--color-ink-light) mt-1 leading-relaxed" set:html={md(release.summary)} />
+          </li>
+        ))}
+      </ul>
+    </details>
+  )}
+</section>

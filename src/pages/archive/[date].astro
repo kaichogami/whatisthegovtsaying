@@ -1,0 +1,66 @@
+---
+import Base from "../../layouts/Base.astro";
+import DateNavigation from "../../components/DateNavigation.astro";
+import CountrySection from "../../components/CountrySection.astro";
+import ActionBar from "../../components/ActionBar.astro";
+import { getDigestByDate, getAllDigestDates, getAllWeeklyDates } from "../../lib/digest";
+import { formatDate } from "../../lib/constants";
+import { md, stripMd } from "../../lib/md";
+
+export function getStaticPaths() {
+  const dates = getAllDigestDates();
+  return dates.map((date) => ({ params: { date } }));
+}
+
+const { date } = Astro.params;
+const page = getDigestByDate(date!);
+const allDates = getAllDigestDates();
+const weeklyDates = getAllWeeklyDates();
+
+if (!page) {
+  return Astro.redirect("/404");
+}
+
+const title = `What Is The Govt Saying — ${formatDate(page.digest.date)}`;
+const description = page.digest.global_summary.replace(/[*_#>\[\]]/g, "").slice(0, 160);
+const globalHtml = md(page.digest.global_summary);
+---
+
+<Base title={title} description={description} date={page.digest.date} ogImage={`/og/daily/${page.digest.date}.png`} type="article">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+    <DateNavigation date={page.digest.date} availableDates={allDates} />
+
+    <div class="flex items-center justify-center gap-1 mb-4 sm:mb-6">
+      <nav class="flex gap-1" aria-label="View mode">
+        <span class="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold bg-(--color-ink) text-(--color-surface) rounded-l">
+          Daily
+        </span>
+        {weeklyDates.length > 0 ? (
+          <a href={`/weekly/${weeklyDates[0]}/`} class="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold bg-(--color-surface-alt) text-(--color-ink-muted) hover:text-(--color-ink) no-underline rounded-r border border-(--color-rule)">
+            Weekly
+          </a>
+        ) : (
+          <span class="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold bg-(--color-surface-alt) text-(--color-ink-muted) rounded-r border border-(--color-rule)">
+            Weekly
+          </span>
+        )}
+      </nav>
+    </div>
+
+    <section class="mt-4 sm:mt-6 mb-8 sm:mb-10">
+      <div class="flex items-start justify-between gap-3 border-t-3 border-(--color-ink) pt-4 mb-4">
+        <h2 class="font-headline text-xl sm:text-2xl md:text-3xl font-bold text-(--color-ink)">
+          {stripMd(page.digest.global_title || "What the World Governments Are Saying")}
+        </h2>
+        <ActionBar title={title} description={description} />
+      </div>
+      <div class="prose text-(--color-ink-light) leading-relaxed text-base sm:text-lg" set:html={globalHtml} />
+    </section>
+
+    <div class="space-y-6 sm:space-y-8">
+      {page.countries.map((country) => (
+        <CountrySection country={country} />
+      ))}
+    </div>
+  </div>
+</Base>

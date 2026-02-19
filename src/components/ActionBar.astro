@@ -1,0 +1,78 @@
+---
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<div class="flex items-center justify-end gap-2 print:hidden" data-action-bar>
+  <button
+    type="button"
+    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-(--color-ink-muted) hover:text-(--color-ink) bg-(--color-surface-alt) border border-(--color-rule) rounded cursor-pointer transition-colors"
+    data-share-btn
+    data-title={title}
+    data-description={description}
+    aria-label="Share this page"
+  >
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+      <polyline points="16 6 12 2 8 6" />
+      <line x1="12" y1="2" x2="12" y2="15" />
+    </svg>
+    Share
+  </button>
+  <button
+    type="button"
+    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-(--color-ink-muted) hover:text-(--color-ink) bg-(--color-surface-alt) border border-(--color-rule) rounded cursor-pointer transition-colors"
+    data-print-btn
+    aria-label="Print this page"
+  >
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="6 9 6 2 18 2 18 9" />
+      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+      <rect x="6" y="14" width="12" height="8" />
+    </svg>
+    Print
+  </button>
+</div>
+
+<script>
+  function initActionBar() {
+    document.querySelectorAll('[data-share-btn]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const title = (btn as HTMLElement).dataset.title || document.title;
+        const text = (btn as HTMLElement).dataset.description || '';
+        const url = window.location.href;
+
+        if (navigator.share) {
+          try {
+            await navigator.share({ title, text, url });
+          } catch { /* user cancelled */ }
+        } else {
+          try {
+            await navigator.clipboard.writeText(url);
+            const original = btn.textContent;
+            btn.textContent = 'Copied!';
+            setTimeout(() => { btn.textContent = original; }, 1500);
+          } catch {
+            // final fallback
+            window.open(
+              `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
+              '_blank',
+              'width=550,height=420'
+            );
+          }
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-print-btn]').forEach((btn) => {
+      btn.addEventListener('click', () => window.print());
+    });
+  }
+
+  initActionBar();
+  document.addEventListener('astro:page-load', initActionBar);
+</script>

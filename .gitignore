@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.env.local
+data/digests.db
+data/digests.db-shm
+data/digests.db-wal
+.env

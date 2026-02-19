@@ -1,0 +1,48 @@
+---
+import { formatDate, formatDateShort, prevDate, nextDate } from "../lib/constants";
+
+interface Props {
+  date: string;
+  availableDates: string[];
+}
+
+const { date, availableDates } = Astro.props;
+const dateSet = new Set(availableDates);
+const prev = prevDate(date);
+const next = nextDate(date);
+const hasPrev = dateSet.has(prev);
+const hasNext = dateSet.has(next);
+---
+
+<nav class="flex items-center justify-center gap-2 sm:gap-4 py-3 sm:py-4" aria-label="Date navigation">
+  {hasPrev ? (
+    <a
+      href={`/archive/${prev}/`}
+      class="text-xs sm:text-sm text-(--color-accent) no-underline hover:underline"
+      aria-label={`Previous day: ${formatDateShort(prev)}`}
+    >
+      &larr; {formatDateShort(prev)}
+    </a>
+  ) : (
+    <span class="text-xs sm:text-sm text-(--color-ink-muted)">&larr;</span>
+  )}
+
+  <time
+    datetime={date}
+    class="font-headline text-base sm:text-lg font-bold text-(--color-ink)"
+  >
+    {formatDate(date)}
+  </time>
+
+  {hasNext ? (
+    <a
+      href={`/archive/${next}/`}
+      class="text-xs sm:text-sm text-(--color-accent) no-underline hover:underline"
+      aria-label={`Next day: ${formatDateShort(next)}`}
+    >
+      {formatDateShort(next)} &rarr;
+    </a>
+  ) : (
+    <span class="text-xs sm:text-sm text-(--color-ink-muted)">&rarr;</span>
+  )}
+</nav>

@@ -1,0 +1,112 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  date?: string;
+  ogImage?: string;
+  canonicalUrl?: string;
+  type?: "website" | "article";
+}
+
+const { title, description, date, ogImage, canonicalUrl, type = "website" } = Astro.props;
+const siteUrl = "https://whatisthegovtsaying.com";
+const fullCanonical = canonicalUrl || Astro.url.href;
+const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).href : undefined;
+
+const jsonLd = type === "article" && date
+  ? JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: title,
+      description,
+      datePublished: date,
+      url: fullCanonical,
+      publisher: {
+        "@type": "Organization",
+        name: "What Is The Govt Saying",
+        url: siteUrl,
+      },
+      ...(ogImageUrl ? { image: ogImageUrl } : {}),
+    })
+  : JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "What Is The Govt Saying",
+      url: siteUrl,
+      description: "Daily digest of government press releases from around the world.",
+    });
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={fullCanonical} />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={type === "article" ? "article" : "website"} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={fullCanonical} />
+    <meta property="og:site_name" content="What Is The Govt Saying" />
+    <meta property="og:locale" content="en_US" />
+    {ogImageUrl && (
+      <>
+        <meta property="og:image" content={ogImageUrl} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:type" content="image/png" />
+      </>
+    )}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content={ogImageUrl ? "summary_large_image" : "summary"} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
+    {date && <meta property="article:published_time" content={date} />}
+
+    <!-- Structured Data -->
+    <script type="application/ld+json" set:html={jsonLd} />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <header class="bg-(--color-surface)">
+      <div class="h-[3px] bg-(--color-ink)"></div>
+      <div class="max-w-4xl mx-auto px-4 pt-3 sm:pt-4 pb-2 sm:pb-3 text-center">
+        <a href="/" class="no-underline inline-flex items-center justify-center gap-1.5 sm:gap-2">
+          <img src="/logo.svg" alt="" width="24" height="24" class="inline-block sm:w-7 sm:h-7" />
+          <h1
+            class="font-headline text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-(--color-ink)"
+          >
+            What Is The Govt Saying
+          </h1>
+        </a>
+        <p
+          class="text-[10px] sm:text-xs tracking-wide uppercase text-(--color-ink-muted) mt-0.5 sm:mt-1"
+        >
+          Daily Government Press Release Digest
+        </p>
+      </div>
+      <div class="border-b border-(--color-rule)"></div>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="border-t border-(--color-rule) mt-10 sm:mt-16">
+      <div class="max-w-4xl mx-auto px-4 py-3 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-(--color-ink-muted)">
+        <span>Summaries written by bots. Always check the <a href="#" class="underline">original source</a>.</span>
+        <span><a href="/privacy/" class="hover:underline">Privacy</a></span>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: Georgia, "Times New Roman", Times, serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --color-ink: #1a1a1a;
+  --color-ink-light: #555555;
+  --color-ink-muted: #888888;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f8f8f6;
+  --color-rule: #e2e0dc;
+  --color-rule-dark: #c4c2be;
+  --color-accent: #8b0000;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: var(--color-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-headline {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+/* Markdown prose inside digest content */
+.prose p {
+  margin-bottom: 0.5em;
+}
+
+.prose p:last-child {
+  margin-bottom: 0;
+}
+
+.prose strong {
+  color: var(--color-ink);
+  font-weight: 400;
+}
+
+.prose em {
+  font-style: italic;
+}
+
+.prose blockquote {
+  border-left: 3px solid var(--color-rule-dark);
+  padding-left: 0.75em;
+  margin: 0.5em 0;
+  color: var(--color-ink-light);
+  font-style: italic;
+}
+
+.prose hr {
+  border: none;
+  border-top: 1px solid var(--color-rule);
+  margin: 0.75em 0;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.25em;
+  margin: 0.5em 0;
+}
+
+.prose li {
+  margin-bottom: 0.25em;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5em 0;
+  font-size: 0.875rem;
+}
+
+.prose th,
+.prose td {
+  text-align: left;
+  padding: 0.35em 0.5em;
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.prose th {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.prose a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  word-break: break-word;
+}
+
+/* Print styles */
+@media print {
+  body {
+    font-size: 11pt;
+    color: #000;
+    background: #fff;
+  }
+
+  header,
+  footer,
+  .print\:hidden,
+  details summary {
+    display: none !important;
+  }
+
+  details {
+    display: block !important;
+  }
+
+  details[open] > ul {
+    display: block !important;
+  }
+
+  a {
+    color: #000 !important;
+    text-decoration: none !important;
+  }
+
+  .prose a::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    color: #555;
+    word-break: break-all;
+  }
+
+  h1,
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+
+  section {
+    page-break-inside: avoid;
+  }
+}
+
+/* Mobile tap targets */
+@media (max-width: 640px) {
+  details summary {
+    padding: 0.5em 0;
+  }
+}
