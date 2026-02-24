@@ -22,6 +22,10 @@ const idx = allWeekly.indexOf(date!);
 const prevWeek = idx < allWeekly.length - 1 ? allWeekly[idx + 1] : null;
 const nextWeek = idx > 0 ? allWeekly[idx - 1] : null;
 
+// Use UTC date to match how the backend generates dates
+const today = new Date().toISOString().split('T')[0];
+const isCurrentWeek = page.digest.week_end >= today;
+
 const title = `Week of ${formatDateShort(page.digest.week_start)} — ${formatDateShort(page.digest.week_end)} | What Is The Govt Saying`;
 const description = page.digest.global_summary.replace(/[*_#>\[\]|]/g, "").slice(0, 160);
 const globalHtml = md(page.digest.global_summary);
@@ -61,6 +65,18 @@ const globalHtml = md(page.digest.global_summary);
         </span>
       </nav>
     </div>
+
+    {isCurrentWeek && (
+      <div class="mb-6 sm:mb-8 p-3 sm:p-4 rounded bg-(--color-surface-alt) border border-(--color-accent) bg-opacity-30 border-opacity-50 text-center flex items-center justify-center gap-2">
+        <span class="relative flex h-3 w-3">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-(--color-accent) opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-(--color-accent)"></span>
+        </span>
+        <p class="text-sm sm:text-base text-(--color-ink-light) m-0">
+          This weekly edition is <strong>actively being updated</strong>. Check back daily as the story develops.
+        </p>
+      </div>
+    )}
 
     <section class="mt-4 sm:mt-6 mb-8 sm:mb-10">
       <div class="flex items-start justify-between gap-3 border-t-3 border-(--color-ink) pt-4 mb-4">
