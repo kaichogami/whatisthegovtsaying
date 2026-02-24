@@ -33,7 +33,7 @@ const globalHtml = md(page.digest.global_summary);
 
 <Base title={title} description={description} date={page.digest.week_end} ogImage={`/og/weekly/${date}.png`} type="article">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
-    <nav class="flex items-center justify-center gap-2 sm:gap-4 py-3 sm:py-4" aria-label="Weekly navigation">
+    <nav class="flex items-center justify-start gap-2 sm:gap-4 py-3 sm:py-4" aria-label="Weekly navigation">
       {prevWeek ? (
         <a href={`/weekly/${prevWeek}/`} class="text-xs sm:text-sm text-(--color-accent) no-underline hover:underline">
           &larr; Prev
@@ -55,7 +55,7 @@ const globalHtml = md(page.digest.global_summary);
       )}
     </nav>
 
-    <div class="flex items-center justify-center gap-1 mb-4 sm:mb-6">
+    <div class="flex items-center justify-start gap-1 mb-4 sm:mb-6">
       <nav class="flex gap-1" aria-label="View mode">
         <a href="/" class="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold bg-(--color-surface-alt) text-(--color-ink-muted) hover:text-(--color-ink) no-underline rounded-l border border-(--color-rule)">
           Daily

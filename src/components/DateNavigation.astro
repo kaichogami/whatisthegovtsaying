@@ -14,7 +14,7 @@ const hasPrev = dateSet.has(prev);
 const hasNext = dateSet.has(next);
 ---
 
-<nav class="flex items-center justify-center gap-2 sm:gap-4 py-3 sm:py-4" aria-label="Date navigation">
+<nav class="flex items-center justify-start gap-2 sm:gap-4 py-3 sm:py-4" aria-label="Date navigation">
   {hasPrev ? (
     <a
       href={`/archive/${prev}/`}
