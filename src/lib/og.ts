@@ -39,7 +39,7 @@ export async function generateOgImage(
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundColor: "#1a1a1a",
+          backgroundColor: "#fcfcfa",
           padding: "60px 64px",
           fontFamily: "Inter",
         },
@@ -55,7 +55,7 @@ export async function generateOgImage(
                     style: {
                       fontSize: 22,
                       fontWeight: 400,
-                      color: "#888888",
+                      color: "#5f5f5a",
                       letterSpacing: "0.15em",
                       textTransform: "uppercase",
                       marginBottom: 16,
@@ -69,8 +69,8 @@ export async function generateOgImage(
                     style: {
                       display: "flex",
                       width: "100%",
-                      height: 3,
-                      backgroundColor: "#e2e0dc",
+                      height: 2,
+                      backgroundColor: "#e9e9e2",
                       marginBottom: 32,
                     },
                   },
@@ -81,7 +81,7 @@ export async function generateOgImage(
                     style: {
                       fontSize: 48,
                       fontWeight: 700,
-                      color: "#ffffff",
+                      color: "#181818",
                       lineHeight: 1.2,
                       marginBottom: 24,
                     },
@@ -97,7 +97,7 @@ export async function generateOgImage(
                     style: {
                       fontSize: 22,
                       fontWeight: 400,
-                      color: "#aaaaaa",
+                      color: "#5f5f5a",
                       lineHeight: 1.5,
                     },
                     children: truncatedDesc,
@@ -113,7 +113,7 @@ export async function generateOgImage(
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                borderTop: "1px solid #333333",
+                borderTop: "1px solid #e9e9e2",
                 paddingTop: 20,
               },
               children: [
@@ -122,7 +122,7 @@ export async function generateOgImage(
                   props: {
                     style: {
                       fontSize: 20,
-                      color: "#888888",
+                      color: "#5f5f5a",
                     },
                     children: dateLabel,
                   },
@@ -132,9 +132,10 @@ export async function generateOgImage(
                   props: {
                     style: {
                       fontSize: 16,
-                      color: "#555555",
+                      color: "#9b8dbf",
                     },
                     children: "whatisthegovtsaying.com",
+
                   },
                 },
               ],

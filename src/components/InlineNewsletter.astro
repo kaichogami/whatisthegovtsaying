@@ -1,0 +1,32 @@
+---
+const id = `inline-nl-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<aside class="my-12 sm:my-16 print:hidden">
+  <p class="font-ui text-xs font-medium uppercase tracking-widest text-(--color-ink-muted) opacity-60 mb-3">Newsletter</p>
+  <p class="font-headline text-base font-medium text-(--color-ink) mb-4">Get the digest in your inbox</p>
+  <form id={id} class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3" data-newsletter-inline>
+    <input
+      type="text"
+      name="name"
+      required
+      placeholder="Name"
+      class="flex-1 bg-transparent border-b border-(--color-line) py-2 text-sm text-(--color-ink) placeholder:text-(--color-ink-muted) placeholder:opacity-50 focus:outline-none focus:border-(--color-accent-1) transition-colors"
+    />
+    <input
+      type="email"
+      name="email"
+      required
+      placeholder="Email"
+      class="flex-1 bg-transparent border-b border-(--color-line) py-2 text-sm text-(--color-ink) placeholder:text-(--color-ink-muted) placeholder:opacity-50 focus:outline-none focus:border-(--color-accent-1) transition-colors"
+    />
+    <button
+      type="submit"
+      class="font-ui font-medium text-sm bg-(--color-ink) text-(--color-paper) px-5 py-2 rounded-sm hover:bg-(--color-accent-1) transition-colors cursor-pointer shrink-0"
+    >
+      Subscribe
+    </button>
+  </form>
+  <p class="inline-msg font-ui text-xs text-(--color-accent-3) mt-2 hidden"></p>
+  <p class="font-ui text-[11px] text-(--color-ink-muted) opacity-60 mt-3">Powered by <a href="https://sutrena.com" target="_blank" rel="noopener noreferrer" class="hover:text-(--color-accent-1) transition-colors">Sutrena</a></p>
+</aside>

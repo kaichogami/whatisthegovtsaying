@@ -1,0 +1,17 @@
+---
+interface Props {
+	class?: string;
+}
+
+const { class: className = "w-8 h-8" } = Astro.props;
+---
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class={className}>
+  <!-- Mid Circle: Purple -->
+  <circle cx="128" cy="98" r="24" fill="var(--color-accent-1)" />
+
+  <!-- Left Quarter Arc: Light Yellow -->
+  <path d="M 64 98 A 64 64 0 0 0 192 98" fill="none" stroke="var(--color-accent-2)" stroke-width="40" stroke-linecap="butt" pathLength="100" stroke-dasharray="48 52" />
+
+  <!-- Right Quarter Arc: Soft Red -->
+  <path d="M 64 98 A 64 64 0 0 0 192 98" fill="none" stroke="var(--color-accent-3)" stroke-width="40" stroke-linecap="butt" pathLength="100" stroke-dasharray="0 52 48 0" />
+</svg>

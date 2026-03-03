@@ -1,35 +1,64 @@
 @import "tailwindcss";
 
+@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=Inter:wght@400;500;600&display=swap");
+
 @theme {
-  --font-serif: Georgia, "Times New Roman", Times, serif;
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  --font-serif: "Source Serif 4", Georgia, "Times New Roman", Times, serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
-  --color-ink: #1a1a1a;
-  --color-ink-light: #555555;
-  --color-ink-muted: #888888;
-  --color-surface: #ffffff;
-  --color-surface-alt: #f8f8f6;
-  --color-rule: #e2e0dc;
-  --color-rule-dark: #c4c2be;
-  --color-accent: #8b0000;
+
+  /* Foundation */
+  --color-paper: #fcfcfa;
+  --color-paper-elevated: #ffffff;
+  --color-ink: #181818;
+  --color-ink-muted: #5f5f5a;
+  --color-line: #e9e9e2;
+
+  /* Brand Accents — gentle */
+  --color-accent-1: #9b8dbf;
+  --color-accent-2: #e8cf8a;
+  --color-accent-3: #d08b7a;
+  --color-accent-soft: rgba(155, 141, 191, 0.10);
 }
 
 body {
-  font-family: var(--font-sans);
-  color: var(--color-ink);
-  background: var(--color-surface);
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--color-ink-muted);
+  background: var(--color-paper);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-size-adjust: 100%;
+}
+
+/* UI: nav, labels, buttons, metadata */
+.font-ui {
+  font-family: var(--font-sans);
+  line-height: 1.4;
 }
 
 .font-headline {
   font-family: var(--font-serif);
   letter-spacing: -0.01em;
-  line-height: 1.15;
+  line-height: 1.25;
+  color: var(--color-ink);
 }
 
-/* Markdown prose inside digest content */
+::selection {
+  background: var(--color-accent-soft);
+}
+
+/* === Prose === */
+.prose {
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--color-ink-muted);
+}
+
 .prose p {
-  margin-bottom: 0.5em;
+  margin-bottom: 0.75em;
 }
 
 .prose p:last-child {
@@ -38,7 +67,7 @@ body {
 
 .prose strong {
   color: var(--color-ink);
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .prose em {
@@ -46,17 +75,17 @@ body {
 }
 
 .prose blockquote {
-  border-left: 3px solid var(--color-rule-dark);
-  padding-left: 0.75em;
-  margin: 0.5em 0;
-  color: var(--color-ink-light);
+  border-left: 2px solid var(--color-line);
+  padding-left: 1em;
+  margin: 0.75em 0;
+  color: var(--color-ink-muted);
   font-style: italic;
 }
 
 .prose hr {
   border: none;
-  border-top: 1px solid var(--color-rule);
-  margin: 0.75em 0;
+  border-top: 1px solid var(--color-line);
+  margin: 1em 0;
 }
 
 .prose ul,
@@ -66,35 +95,42 @@ body {
 }
 
 .prose li {
-  margin-bottom: 0.25em;
+  margin-bottom: 0.3em;
 }
 
 .prose table {
   width: 100%;
   border-collapse: collapse;
-  margin: 0.5em 0;
+  margin: 0.75em 0;
   font-size: 0.875rem;
+  font-family: var(--font-sans);
 }
 
 .prose th,
 .prose td {
   text-align: left;
-  padding: 0.35em 0.5em;
-  border-bottom: 1px solid var(--color-rule);
+  padding: 0.4em 0.5em;
+  border-bottom: 1px solid var(--color-line);
 }
 
 .prose th {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-ink);
 }
 
 .prose a {
-  color: var(--color-accent);
-  text-decoration: underline;
-  word-break: break-word;
+  color: var(--color-ink-muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-line);
+  transition: border-color 0.2s ease, color 0.2s ease;
 }
 
-/* Print styles */
+.prose a:hover {
+  color: var(--color-accent-1);
+  border-color: var(--color-accent-1);
+}
+
+/* === Print === */
 @media print {
   body {
     font-size: 11pt;
@@ -120,6 +156,7 @@ body {
   a {
     color: #000 !important;
     text-decoration: none !important;
+    border: none !important;
   }
 
   .prose a::after {
@@ -140,7 +177,6 @@ body {
   }
 }
 
-/* Mobile tap targets */
 @media (max-width: 640px) {
   details summary {
     padding: 0.5em 0;

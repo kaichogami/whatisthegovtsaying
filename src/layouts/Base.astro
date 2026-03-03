@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import Logo from "../components/Logo.astro";
 
 interface Props {
   title: string;
@@ -78,36 +79,128 @@ const jsonLd = type === "article" && date
     <script type="application/ld+json" set:html={jsonLd} />
   </head>
   <body class="min-h-screen flex flex-col">
-    <header class="bg-(--color-surface)">
-      <div class="h-[3px] bg-(--color-ink)"></div>
-      <div class="max-w-4xl mx-auto px-4 pt-3 sm:pt-4 pb-2 sm:pb-3 text-left">
-        <a href="/" class="no-underline inline-flex items-center justify-start gap-1.5 sm:gap-2">
-          <img src="/logo.svg" alt="" width="24" height="24" class="inline-block sm:w-7 sm:h-7" />
-          <h1
-            class="font-headline text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-(--color-ink)"
-          >
+    <header>
+      <div class="h-[2px] bg-(--color-accent-1) opacity-40"></div>
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 py-5 sm:py-6">
+        <a href="/" class="no-underline inline-flex items-center gap-2.5">
+          <Logo class="w-7 h-7 sm:w-8 sm:h-8" />
+          <span class="font-headline text-lg sm:text-xl font-medium">
             What Is The Govt Saying
-          </h1>
+          </span>
         </a>
-        <p
-          class="text-[10px] sm:text-xs tracking-wide uppercase text-(--color-ink-muted) mt-0.5 sm:mt-1"
-        >
+        <p class="font-ui text-[10px] sm:text-xs tracking-widest uppercase text-(--color-ink-muted) mt-1 opacity-70">
           Daily Government Press Release Digest
         </p>
       </div>
-      <div class="border-b border-(--color-rule)"></div>
     </header>
 
     <main class="flex-1">
       <slot />
     </main>
 
-    <footer class="border-t border-(--color-rule) mt-10 sm:mt-16">
-      <div class="max-w-4xl mx-auto px-4 py-3 sm:py-4 flex flex-col items-center gap-1.5 sm:gap-2 text-(--color-ink-muted)">
-        <span class="text-sm sm:text-base font-medium text-(--color-ink)">Data fetched from <a href="https://govtintelbot.com" class="underline" target="_blank" rel="noopener noreferrer">govtintelbot.com</a></span>
-        <div class="flex items-center gap-3 text-[11px] sm:text-xs">
-          <span>Summaries written by bots. Always check the original source.</span>
-          <a href="/privacy/" class="hover:underline">Privacy</a>
+    <section class="mt-16 sm:mt-24 print:hidden">
+      <div class="border-t border-(--color-line)"></div>
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+        <h2 class="font-headline text-lg sm:text-xl font-medium mb-1.5">
+          Stay Informed
+        </h2>
+        <p class="font-ui text-sm text-(--color-ink-muted) mb-6">
+          Get the daily government press release digest delivered to your inbox.
+        </p>
+        <form id="newsletter-form" class="flex flex-col sm:flex-row items-stretch sm:items-end gap-4 max-w-lg">
+          <div class="flex-1">
+            <label for="nl-name" class="font-ui text-xs uppercase tracking-widest text-(--color-ink-muted) opacity-70 mb-1.5 block">Name</label>
+            <input
+              id="nl-name"
+              type="text"
+              name="name"
+              required
+              class="w-full bg-transparent border-b border-(--color-line) py-2.5 text-sm text-(--color-ink) placeholder:text-(--color-ink-muted) placeholder:opacity-50 focus:outline-none focus:border-(--color-accent-1) transition-colors"
+            />
+          </div>
+          <div class="flex-1">
+            <label for="nl-email" class="font-ui text-xs uppercase tracking-widest text-(--color-ink-muted) opacity-70 mb-1.5 block">Email</label>
+            <input
+              id="nl-email"
+              type="email"
+              name="email"
+              required
+              class="w-full bg-transparent border-b border-(--color-line) py-2.5 text-sm text-(--color-ink) placeholder:text-(--color-ink-muted) placeholder:opacity-50 focus:outline-none focus:border-(--color-accent-1) transition-colors"
+            />
+          </div>
+          <button
+            type="submit"
+            class="font-ui font-medium text-sm bg-(--color-ink) text-(--color-paper) px-6 py-2.5 rounded-sm hover:bg-(--color-accent-1) transition-colors cursor-pointer shrink-0"
+          >
+            Subscribe
+          </button>
+        </form>
+        <p id="newsletter-msg" class="font-ui text-xs text-(--color-accent-3) mt-3 hidden"></p>
+        <div class="flex items-center gap-3 mt-4">
+          <p class="font-ui text-xs text-(--color-ink-muted) opacity-60">No spam. Unsubscribe anytime.</p>
+          <span class="font-ui text-[11px] text-(--color-ink-muted) opacity-60">Powered by <a href="https://sutrena.com" target="_blank" rel="noopener noreferrer" class="hover:text-(--color-accent-1) transition-colors">Sutrena</a></span>
+        </div>
+      </div>
+      <script>
+        const FORM_URL = 'https://sutrena.com/api/forms/357a392d-062e-46d5-9729-45533c534e02/submit';
+
+        async function handleNewsletterSubmit(form: HTMLFormElement, msgEl: HTMLElement | null) {
+          const btn = form.querySelector('button') as HTMLButtonElement;
+          const data = Object.fromEntries(new FormData(form));
+
+          btn.disabled = true;
+          btn.textContent = 'Subscribing\u2026';
+          if (msgEl) msgEl.classList.add('hidden');
+
+          try {
+            const res = await fetch(FORM_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data),
+            });
+
+            if (res.ok) {
+              form.innerHTML = '<p class="text-sm text-(--color-ink) py-2">Thanks for subscribing!</p>';
+            } else {
+              const body = await res.json();
+              const errText = body.error || 'Something went wrong. Please try again.';
+              if (msgEl) { msgEl.textContent = errText; msgEl.classList.remove('hidden'); }
+              btn.disabled = false;
+              btn.textContent = 'Subscribe';
+            }
+          } catch {
+            if (msgEl) { msgEl.textContent = 'Network error. Please try again.'; msgEl.classList.remove('hidden'); }
+            btn.disabled = false;
+            btn.textContent = 'Subscribe';
+          }
+        }
+
+        // Footer form
+        document.getElementById('newsletter-form')?.addEventListener('submit', (e) => {
+          e.preventDefault();
+          handleNewsletterSubmit(e.target as HTMLFormElement, document.getElementById('newsletter-msg'));
+        });
+
+        // Inline forms (mid-page)
+        document.querySelectorAll('[data-newsletter-inline]').forEach((form) => {
+          form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const f = e.target as HTMLFormElement;
+            const msg = f.closest('aside')?.querySelector('.inline-msg') as HTMLElement | null;
+            handleNewsletterSubmit(f, msg);
+          });
+        });
+      </script>
+    </section>
+
+    <footer class="border-t border-(--color-line) mt-8">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8 font-ui text-sm text-(--color-ink-muted)">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-6">
+          <span>Data from <a href="https://govtintelbot.com" class="hover:text-(--color-accent-1) transition-colors" target="_blank" rel="noopener noreferrer">govtintelbot.com</a></span>
+          <span class="hidden sm:inline opacity-30">|</span>
+          <span class="opacity-70">Summaries written by bots. Always check the original source.</span>
+          <span class="hidden sm:inline opacity-30">|</span>
+          <a href="/privacy/" class="hover:text-(--color-accent-1) transition-colors">Privacy</a>
         </div>
       </div>
     </footer>
