@@ -6,8 +6,9 @@ services:
       - WORLD_NEWS_API_KEY=${WORLD_NEWS_API_KEY}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - OPENROUTER_MODEL=google/gemini-2.5-flash-lite
-      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
-      - CLOUDFLARE_ACCOUNT_ID=${CLOUDFLARE_ACCOUNT_ID}
+      - SUTRENA_API_KEY=${SUTRENA_API_KEY}
+      - SUTRENA_URL=${SUTRENA_URL:-https://sutrena.com}
+      - SUTRENA_SUBDOMAIN_ID=${SUTRENA_SUBDOMAIN_ID}
       - BACKFILL_DAYS=30
     volumes:
       - digest-data:/app/data
