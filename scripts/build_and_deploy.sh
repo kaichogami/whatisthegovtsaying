@@ -16,8 +16,8 @@ PRESIGN=$(curl -sf -X POST "$SUTRENA_URL/api/deploy" \
   -H "Authorization: Bearer $SUTRENA_API_KEY" \
   -H "Content-Type: application/json" \
   -d "{\"sizeBytes\": $SIZE}")
-DEPLOY_ID=$(echo "$PRESIGN" | jq -r '.deployId')
-UPLOAD_URL=$(echo "$PRESIGN" | jq -r '.uploadUrl')
+DEPLOY_ID=$(echo "$PRESIGN" | jq -r '.data.deployId')
+UPLOAD_URL=$(echo "$PRESIGN" | jq -r '.data.uploadUrl')
 
 # Upload zip
 curl -sf -X PUT "$UPLOAD_URL" --data-binary "@site.zip" -H "Content-Type: application/zip"
